@@ -1,32 +1,47 @@
-float cm,duracao; 
+float cm,duracao,mcub; 
 
 byte pinoTransmissor=11; // trig
 byte pinoReceptor=10; //echo
 
 //LED RGB
-const byte G=3;
-const byte B=4;
-const byte R=5;
+const int ledg=4;
+const int ledy=7;
+const int ledr=2;
 
 void setup()
 {
   // LED
-  pinMode(R, OUTPUT);
-  pinMode(G, OUTPUT);
-  pinMode(B, OUTPUT);
-  // sensor
+  pinMode(ledr, OUTPUT);
+  pinMode(ledg, OUTPUT);
+  pinMode(ledy, OUTPUT);
+  // Sensor
   pinMode(pinoTransmissor, OUTPUT); 
   pinMode(pinoReceptor, INPUT);     
-  //porta serial
+  
   Serial.begin(9600);
 }
 
 void loop()
 {
   cm =  distancia();  
+  mcub = 17 * (cm * 2)  ;
+
+  if(mcub < 340){
+    green();
+    Serial.println("Green");
+  }
+  else if ((mcub >= 340) && mcub <= 400){
+    yellow();
+    Serial.println("YEllOW");
+  }
+  else if (mcub >= 400){
+    red();
+    }
+    
+  
   // Impressão Dados
-  Serial.print(cm);
-  Serial.println(" cm");
+  Serial.print(mcub);
+  Serial.println(" cm3");
   delay(500);
 }
 
@@ -49,21 +64,27 @@ float distancia()
   if (calcDistancia>=331){ // fora do limite do sensor
       calcDistancia=0;
     }
-  float mcub= map(calcDistancia,3,310,0,16);
-  return calcDistancia;  
-}
+  float cmcub = map(calcDistancia,0,20,16,0);
+  //return calcDistancia;
+  return cmcub;
+} 
+  
+  
 // funcoes de cores do led
 void red(){
     digitalWrite(ledr,HIGH);
-    delay(500);
+    delay(200);
+    digitalWrite(ledr,LOW);
   }
 void green(){
     digitalWrite(ledg,HIGH);
-    delay(500);
+    delay(200);
+    digitalWrite(ledg,LOW);
   }  
-void blue(){
+void yellow(){
     digitalWrite(ledy,HIGH);
-    delay(500);
+    delay(200);
+    digitalWrite(ledy,LOW);
   }
 void apaga(){
     digitalWrite(ledy,LOW);
