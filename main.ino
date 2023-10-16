@@ -1,3 +1,4 @@
+#include <Arduino.h>
 float cm,duracao,mcub; 
 
 byte pinoTransmissor=11; // trig
@@ -21,30 +22,6 @@ void setup()
   Serial.begin(9600);
 }
 
-void loop()
-{
-  cm =  distancia();  
-  mcub = 17 * (cm * 2)  ;
-
-  if(mcub < 340){
-    green();
-    Serial.println("Green");
-  }
-  else if ((mcub >= 340) && mcub <= 400){
-    yellow();
-    Serial.println("YEllOW");
-  }
-  else if (mcub >= 400){
-    red();
-    }
-    
-  
-  // Impressão Dados
-  Serial.print(mcub);
-  Serial.println(" cm3");
-  delay(500);
-}
-
 float distancia()
 {  
   // apenas para limpar o pino transmissor, cortar o sinal e aguardar 5us segundos  
@@ -64,7 +41,7 @@ float distancia()
   if (calcDistancia>=331){ // fora do limite do sensor
       calcDistancia=0;
     }
-  float cmcub = map(calcDistancia,0,20,16,0);
+  float cmcub = map(calcDistancia,0,31,31,0);
   //return calcDistancia;
   return cmcub;
 } 
@@ -91,3 +68,28 @@ void apaga(){
     digitalWrite(ledr,LOW);
     digitalWrite(ledg,LOW);
   } 
+
+void loop()
+{
+  cm =  distancia();
+  //Serial.println(cm);
+  mcub = 20 * (cm * 11.5)  ;
+
+  if(mcub < 4500){
+    green();
+    Serial.println("Green");
+  }
+  else if ((mcub >= 4500) && mcub <= 5250){
+    yellow();
+    Serial.println("YEllOW");
+  }
+  else if (mcub >= 5250){
+    red();
+    }
+    
+  
+  // Impressão Dados
+  Serial.print(mcub);
+  Serial.println(" cm3");
+  delay(500);
+}
